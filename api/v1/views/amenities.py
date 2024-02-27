@@ -7,7 +7,7 @@ from models.amenity import Amenity
 from flask import abort, request, jsonify
 
 
-@app_views.route("/amenities", methods=["GET])
+@app_views.route("/amenities", methods=["GET"])
 @app_views.route("/amenities/<amenity_id>", methods=["GET"])
 def amenity(amenity_id=None):
     """show amenity and amenity with id"""

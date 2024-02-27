@@ -31,7 +31,7 @@ def cities_id(city_id):
     return jsonify(city.to_dict())
 
 
-@app_views.route("/cities/<city_id>", strict_slashes=False
+@app_views.route("/cities/<city_id>", strict_slashes=False,
                  methods=["DELETE"])
 def city_delete(city_id):
     """Delete method"""
@@ -49,7 +49,7 @@ def create_city(state_id):
     state = storage.get(State, state_id)
     if state is None:
         abort(404)
-    data = request.get_json(force=True, silent=True_
+    data = request.get_json(force=True, silent=True)
     if not data:
         abort(400, "Not a JSON")
     if "name" not in data:
