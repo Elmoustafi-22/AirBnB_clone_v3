@@ -1,15 +1,19 @@
 #!/usr/bin/python3
+"""All default RESTFul API actions"""
 
 from api.v1.views import app_views
 from models import storage
 from models.place import Place
+from models.city import City
 from models.user import User
 from models.review import Review
 from flask import abort, request, jsonify
 
 
-@app_views.route("/places/<place_id>/reviews", methods=["GET"])
-def review(place_id):
+@app_views.route("/places/<place_id>/reviews", strict_slashes=False,
+                 methods=["GET"])
+def reviews(place_id):
+    """show reviews"""
     reviews_list = []
     place = storage.get(Place, place_id)
     if place is None:
@@ -17,20 +21,22 @@ def review(place_id):
     reviews = place.reviews
     for review in reviews:
         reviews_list.append(review.to_dict())
-    return jsonify(review_list)
+    return jsonify(reviews_list)
 
 
-
-@app_views.route("/reviews/<review_id>", methods=["GET"])
+@app_views.route("/reviews/<review_id>", strict_slashes=False, methods=["GET"])
 def get_review(review_id):
+    """Gets a review object"""
     review = storage.get(Review, review_id)
     if review is None:
         abort(404)
     return jsonify(review.to_dict())
 
 
-@app_views.route("/reviews/<review_id>", methods=["DELETE"])
-def delete_review(review_id):
+@app_views.route("/reviews/<review_id>", strict_slashes=False,
+                 methods=["DELETE"])
+def review_delete(review_id):
+    """delete review method"""
     obj = storage.get(Review, review_id)
     if obj is None:
         abort(404)
@@ -39,8 +45,10 @@ def delete_review(review_id):
     return jsonify({}), 200
 
 
-@app_views.route("/places/<place_id>/reviews", methods=["POST"])
+@app_views.route("/places/<place_id>/reviews", strict_slashes=False,
+                 methods=["POST"])
 def create_review(place_id):
+    """create new post"""
     place = storage.get(Place, place_id)
     if place is None:
         abort(404)
@@ -59,9 +67,9 @@ def create_review(place_id):
     return jsonify(new_review.to_dict()), 201
 
 
-
-@app_views.route("/reviews/<review_id>", methods=["PUT"])
+@app_views.route("/reviews/<review_id>", strict_slashes=False, methods=["PUT"])
 def update_review(review_id):
+    """update review"""
     review = storage.get(Review, review_id)
     if review is None:
         abort(404)
@@ -69,5 +77,6 @@ def update_review(review_id):
     if not data:
         abort(400, "Not a JSON")
     review.text = data.get("text", review.text)
+
     review.save()
-    return jsonify(review.to_dict())
+    return jsonify(review.to_dict()), 200

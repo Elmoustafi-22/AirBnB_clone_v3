@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""All default RESTFul API actions"""
 
 from api.v1.views import app_views
 from models import storage
@@ -10,7 +11,7 @@ from flask import abort, request, jsonify
 @app_views.route("/users/<user_id>", strict_slashes=False,
                  methods=["GET"])
 def user(user_id=None):
-    """show user and user with id"""
+    """show user and its id"""
     user_list = []
     if user_id is None:
         all_objs = storage.all(User).values()
@@ -27,7 +28,7 @@ def user(user_id=None):
 @app_views.route("/users/<user_id>", strict_slashes=False,
                  methods=["DELETE"])
 def user_delete(user_id):
-    """delete method"""
+    """delete user method"""
     obj = storage.get(User, user_id)
     if obj is None:
         abort(404)
@@ -38,7 +39,7 @@ def user_delete(user_id):
 
 @app_views.route("/users", strict_slashes=False, methods=["POST"])
 def create_user():
-    """create a new post req"""
+    """create new post"""
     data = request.get_json(force=True, silent=True)
     if not data:
         abort(400, "Not a JSON")

@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+"""All default RESTFul API actions"""
+
 
 import os
 from api.v1.views import app_views
@@ -10,8 +12,10 @@ from flask import abort, request, jsonify
 db_mode = os.getenv("HBNB_TYPE_STORAGE")
 
 
-@app_views.route("/places/<place_id>/amenities", methods=["GET"])
+@app_views.route("/places/<place_id>/amenities", strict_slashes=False,
+                 methods=["GET"])
 def place_amenities(place_id):
+    """retrieve place amenities"""
     amenities_list = []
     place = storage.get(Place, place_id)
     if not place:
@@ -20,14 +24,17 @@ def place_amenities(place_id):
         amenities = place.amenities
         for amenity in amenities:
             amenities_list.append(amenity.to_dict())
+
     else:
         amenities_list = place.amenity_ids
-        return jsonify(amenities_list)
+    return jsonify(amenities_list)
 
 
 @app_views.route("/places/<place_id>/amenities/<amenity_id>",
+                 strict_slashes=False,
                  methods=["DELETE"])
 def delete_amenity(place_id, amenity_id):
+    """deleye an amenity my id"""
     place = storage.get(Place, place_id)
     if not place:
         abort(404)
@@ -45,12 +52,14 @@ def delete_amenity(place_id, amenity_id):
             amenity.save()
         else:
             abort(404)
-    return jsonify({}), 200
+    return jsonify({}, 200)
 
 
-@app_views.route("/places/<place_id>/amenities/<amenity_id>",
+@app_views.route("places/<place_id>/amenities/<amenity_id>",
+                 strict_slashes=False,
                  methods=["POST"])
 def link_amenity(place_id, amenity_id):
+    """Link Amenity to a Place"""
     place = storage.get(Place, place_id)
     if not place:
         abort(404)
@@ -65,4 +74,4 @@ def link_amenity(place_id, amenity_id):
     if amenity not in place_amenities:
         place_amenities.append(amenity)
     else:
-        return jsonify(amenity), 200
+        return jsonify(amenity, 200)
