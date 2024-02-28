@@ -9,11 +9,13 @@ from models.place import Place
 from models.review import Review
 from models.user import User
 
+
 @app_views.route("/status", strict_slashes=False, methods=["GET"])
 def status():
     return {
         "status": "OK",
     }
+
 
 @app_views.route("/stats", strict_slashes=False, methods=["GET"])
 def stats():
